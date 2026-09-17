@@ -1,0 +1,6 @@
+.env
+app.log
+server.exe
+repository.zip
+logs/
+uploads/

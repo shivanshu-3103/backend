@@ -1,0 +1,441 @@
+{
+  "info": {
+    "name": "Handdy API Collection",
+    "description": "Complete collection of all Handdy APIs including Public, Desktop App, Employee Portal, and Admin endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "Base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "Authorization",
+      "value": "Bearer YOUR_TOKEN_HERE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Public & Auth",
+      "item": [
+        {
+          "name": "Hello API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{Base_url}}/api/v1/hello", "host": ["{{Base_url}}"], "path": ["api", "v1", "hello"] }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{Base_url}}/api/v1/health", "host": ["{{Base_url}}"], "path": ["api", "v1", "health"] }
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/auth/register", "host": ["{{Base_url}}"], "path": ["api", "v1", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/auth/login", "host": ["{{Base_url}}"], "path": ["api", "v1", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Employee Login (with device)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"employee@example.com\",\n  \"password\": \"password123\",\n  \"device_fingerprint\": \"UNIQUE_FINGERPRINT_123\"\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/auth/employee-login", "host": ["{{Base_url}}"], "path": ["api", "v1", "auth", "employee-login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Desktop App (Device Auth)",
+      "item": [
+        {
+          "name": "Check Device Registration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/api/v1/app/device/check?device_fingerprint=UNIQUE_FINGERPRINT_123",
+              "host": ["{{Base_url}}"],
+              "path": ["api", "v1", "app", "device", "check"],
+              "query": [ { "key": "device_fingerprint", "value": "UNIQUE_FINGERPRINT_123" } ]
+            }
+          }
+        },
+        {
+          "name": "Upload Background Screenshot",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "X-Device-Fingerprint", "value": "UNIQUE_FINGERPRINT_123" } ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "screenshot", "type": "file", "src": "/path/to/screenshot.jpg" },
+                { "key": "captured_at", "type": "text", "value": "2026-09-12T12:00:00Z" },
+                { "key": "notes", "type": "text", "value": "Background screenshot" }
+              ]
+            },
+            "url": { "raw": "{{Base_url}}/api/v1/app/employee-screenshots", "host": ["{{Base_url}}"], "path": ["api", "v1", "app", "employee-screenshots"] }
+          }
+        },
+        {
+          "name": "Save Employee Activity",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "X-Device-Fingerprint", "value": "UNIQUE_FINGERPRINT_123" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"keyboard_activity\": 125,\n  \"mouse_activity\": 84,\n  \"keystrokes\": [\"H\", \"e\", \"l\", \"l\", \"o\"],\n  \"mouse_events\": [\n    {\"type\": \"move\", \"x\": 640, \"y\": 360},\n    {\"type\": \"click\", \"button\": \"left\", \"x\": 640, \"y\": 360}\n  ],\n  \"captured_at\": \"2026-09-13T12:00:00Z\"\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/app/employee-activity", "host": ["{{Base_url}}"], "path": ["api", "v1", "app", "employee-activity"] }
+          }
+        },
+        {
+          "name": "Save Application Usage",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "X-Device-Fingerprint", "value": "UNIQUE_FINGERPRINT_123" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"application_name\": \"Visual Studio Code\",\n  \"executable_name\": \"Code.exe\",\n  \"window_title\": \"index.js - project - Visual Studio Code\",\n  \"started_at\": \"2026-09-14T10:00:00Z\",\n  \"ended_at\": \"2026-09-14T10:05:00Z\",\n  \"duration_seconds\": 300\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/app/applications", "host": ["{{Base_url}}"], "path": ["api", "v1", "app", "applications"] }
+          }
+        },
+        {
+          "name": "Save Website Usage",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "X-Device-Fingerprint", "value": "UNIQUE_FINGERPRINT_123" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"domain\": \"github.com\",\n  \"url\": \"https://github.com/my/project\",\n  \"page_title\": \"Project Overview\",\n  \"started_at\": \"2026-09-14T10:05:00Z\",\n  \"ended_at\": \"2026-09-14T10:10:00Z\",\n  \"duration_seconds\": 300\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/app/websites", "host": ["{{Base_url}}"], "path": ["api", "v1", "app", "websites"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Employee Portal (User)",
+      "item": [
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ],
+            "url": { "raw": "{{Base_url}}/api/v1/users/me", "host": ["{{Base_url}}"], "path": ["api", "v1", "users", "me"] }
+          }
+        },
+        {
+          "name": "Update Current User",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.updated@example.com\"\n}" },
+            "url": { "raw": "{{Base_url}}/api/v1/users/me", "host": ["{{Base_url}}"], "path": ["api", "v1", "users", "me"] }
+          }
+        },
+        {
+          "name": "List My Devices",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ],
+            "url": { "raw": "{{Base_url}}/api/v1/employee-devices", "host": ["{{Base_url}}"], "path": ["api", "v1", "employee-devices"] }
+          }
+        },
+        {
+          "name": "List My Screenshots",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ],
+            "url": { "raw": "{{Base_url}}/api/v1/employee-screenshots?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "employee-screenshots"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] }
+          }
+        },
+        {
+          "name": "List My Activities",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ],
+            "url": { "raw": "{{Base_url}}/api/v1/employee-activities?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "employee-activities"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] }
+          }
+        },
+        {
+          "name": "Options (Dropdowns)",
+          "item": [
+            {
+              "name": "Get Department Options",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/options/departments", "host": ["{{Base_url}}"], "path": ["api", "v1", "options", "departments"] } }
+            },
+            {
+              "name": "Get Role Options",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/options/roles", "host": ["{{Base_url}}"], "path": ["api", "v1", "options", "roles"] } }
+            },
+            {
+              "name": "Get Team Options",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/options/teams", "host": ["{{Base_url}}"], "path": ["api", "v1", "options", "teams"] } }
+            },
+            {
+              "name": "Get Task Options",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/options/tasks", "host": ["{{Base_url}}"], "path": ["api", "v1", "options", "tasks"] } }
+            },
+            {
+              "name": "Get Employee Options",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/options/employees", "host": ["{{Base_url}}"], "path": ["api", "v1", "options", "employees"] } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Admin",
+      "item": [
+        {
+          "name": "Core Resources",
+          "item": [
+            {
+              "name": "Employees",
+              "item": [
+                {
+                  "name": "Create Employee",
+                  "request": {
+                    "method": "POST",
+                    "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ],
+                    "body": { "mode": "raw", "raw": "{\n  \"organization_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"employee_code\": \"EMP001\",\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\",\n  \"designation\": \"Software Engineer\",\n  \"department_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"role_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"status\": \"active\"\n}" },
+                    "url": { "raw": "{{Base_url}}/api/v1/employees", "host": ["{{Base_url}}"], "path": ["api", "v1", "employees"] }
+                  }
+                },
+                {
+                  "name": "List Employees",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/employees?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "employees"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Get Employee by ID",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/employees/EMPLOYEE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "employees", "EMPLOYEE_UUID"] } }
+                },
+                {
+                  "name": "Update Employee",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Doe Updated\",\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/employees/EMPLOYEE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "employees", "EMPLOYEE_UUID"] } }
+                },
+                {
+                  "name": "Delete Employee",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/employees/EMPLOYEE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "employees", "EMPLOYEE_UUID"] } }
+                }
+              ]
+            },
+            {
+              "name": "Departments",
+              "item": [
+                {
+                  "name": "Create Department",
+                  "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Engineering\",\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/departments", "host": ["{{Base_url}}"], "path": ["api", "v1", "departments"] } }
+                },
+                {
+                  "name": "List Departments",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/departments?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "departments"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Department",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Engineering Updated\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/departments/DEPARTMENT_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "departments", "DEPARTMENT_UUID"] } }
+                },
+                {
+                  "name": "Delete Department",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/departments/DEPARTMENT_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "departments", "DEPARTMENT_UUID"] } }
+                }
+              ]
+            },
+            {
+              "name": "Roles",
+              "item": [
+                {
+                  "name": "Create Role",
+                  "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Manager\",\n  \"status\": \"active\",\n  \"department_id\": \"DEPARTMENT_UUID\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/roles", "host": ["{{Base_url}}"], "path": ["api", "v1", "roles"] } }
+                },
+                {
+                  "name": "List Roles",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/roles?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "roles"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Role",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Senior Manager\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/roles/ROLE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "roles", "ROLE_UUID"] } }
+                },
+                {
+                  "name": "Delete Role",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/roles/ROLE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "roles", "ROLE_UUID"] } }
+                }
+              ]
+            },
+            {
+              "name": "Teams",
+              "item": [
+                {
+                  "name": "Create Team",
+                  "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Engineering Team\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/teams", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "teams"] } }
+                },
+                {
+                  "name": "List Teams",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/teams?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "teams"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Team",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Design Team\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/teams/TEAM_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "teams", "TEAM_UUID"] } }
+                },
+                {
+                  "name": "Delete Team",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/teams/TEAM_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "teams", "TEAM_UUID"] } }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Tasks & Assignments",
+          "item": [
+            {
+              "name": "Create Task",
+              "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Frontend Development\",\n  \"type\": \"work\",\n  \"idle_logout_enabled\": true,\n  \"idle_logout_minutes\": 15,\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/tasks", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks"] } }
+            },
+            {
+              "name": "List Tasks",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/tasks?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+            },
+            {
+              "name": "Update Task",
+              "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Backend Development\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/tasks/TASK_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks", "TASK_UUID"] } }
+            },
+            {
+              "name": "Delete Task",
+              "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/tasks/TASK_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks", "TASK_UUID"] } }
+            },
+            {
+              "name": "Assign Task",
+              "request": { "method": "POST", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"assign_type\": \"employee\",\n  \"assign_id\": \"EMPLOYEE_UUID\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/tasks/TASK_UUID/assignments", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks", "TASK_UUID", "assignments"] } }
+            },
+            {
+              "name": "List Task Assignments",
+              "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/tasks/TASK_UUID/assignments?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks", "TASK_UUID", "assignments"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+            },
+            {
+              "name": "Remove Task Assignment",
+              "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/tasks/assignments/ASSIGNMENT_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "tasks", "assignments", "ASSIGNMENT_UUID"] } }
+            }
+          ]
+        },
+        {
+          "name": "Employee Tracking Data",
+          "item": [
+            {
+              "name": "Devices",
+              "item": [
+                {
+                  "name": "List All Devices",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employee-devices?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employee-devices"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "List Devices by Employee",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employees/EMPLOYEE_UUID/devices?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employees", "EMPLOYEE_UUID", "devices"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                }
+              ]
+            },
+            {
+              "name": "Screenshots",
+              "item": [
+                {
+                  "name": "List All Screenshots",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employee-screenshots?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employee-screenshots"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "List Screenshots by Employee",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employees/EMPLOYEE_UUID/screenshots?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employees", "EMPLOYEE_UUID", "screenshots"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Screenshot Details",
+                  "request": {
+                    "method": "PUT",
+                    "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        { "key": "notes", "type": "text", "value": "Updated notes" }
+                      ]
+                    },
+                    "url": { "raw": "{{Base_url}}/api/v1/admin/employee-screenshots/SCREENSHOT_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employee-screenshots", "SCREENSHOT_UUID"] }
+                  }
+                },
+                {
+                  "name": "Delete Screenshot",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employee-screenshots/SCREENSHOT_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employee-screenshots", "SCREENSHOT_UUID"] } }
+                }
+              ]
+            },
+            {
+              "name": "Activities",
+              "item": [
+                {
+                  "name": "List All Activities",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employee-activities?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employee-activities"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "List Activities by Employee",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employees/EMPLOYEE_UUID/activities?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employees", "EMPLOYEE_UUID", "activities"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                }
+              ]
+            },
+            {
+              "name": "Applications",
+              "item": [
+                {
+                  "name": "List All Applications",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/applications?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "applications"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "List Applications by Employee",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employees/EMPLOYEE_UUID/applications?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employees", "EMPLOYEE_UUID", "applications"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Application",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"window_title\": \"Updated Title\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/applications/APP_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "applications", "APP_UUID"] } }
+                },
+                {
+                  "name": "Delete Application",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/applications/APP_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "applications", "APP_UUID"] } }
+                }
+              ]
+            },
+            {
+              "name": "Websites",
+              "item": [
+                {
+                  "name": "List All Websites",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/websites?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "websites"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "List Websites by Employee",
+                  "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/employees/EMPLOYEE_UUID/websites?page=1&limit=10", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "employees", "EMPLOYEE_UUID", "websites"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] } }
+                },
+                {
+                  "name": "Update Website",
+                  "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "{{Authorization}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"page_title\": \"Updated Title\"\n}" }, "url": { "raw": "{{Base_url}}/api/v1/admin/websites/WEBSITE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "websites", "WEBSITE_UUID"] } }
+                },
+                {
+                  "name": "Delete Website",
+                  "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "{{Authorization}}" } ], "url": { "raw": "{{Base_url}}/api/v1/admin/websites/WEBSITE_UUID", "host": ["{{Base_url}}"], "path": ["api", "v1", "admin", "websites", "WEBSITE_UUID"] } }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
