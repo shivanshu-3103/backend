@@ -1,4 +1,4 @@
-.env
+# .env
 app.log
 server.exe
 repository.zip
