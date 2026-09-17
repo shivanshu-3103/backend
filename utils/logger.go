@@ -38,40 +38,36 @@ func init() {
 // LogSuccess logs a successful event or info message to access.log
 func LogSuccess(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
+	fmt.Printf("[%s] SUCCESS: %s\n", time.Now().Format(time.RFC3339), msg)
 	if successLogger != nil {
 		successLogger.Println(msg)
-	} else {
-		fmt.Printf("[%s] SUCCESS: %s\n", time.Now().Format(time.RFC3339), msg)
 	}
 }
 
 // LogInfo is an alias for LogSuccess
 func LogInfo(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
+	fmt.Printf("[%s] INFO: %s\n", time.Now().Format(time.RFC3339), msg)
 	if successLogger != nil {
 		successLogger.Println(msg)
-	} else {
-		fmt.Printf("[%s] INFO: %s\n", time.Now().Format(time.RFC3339), msg)
 	}
 }
 
 // LogError logs an error to error.log
 func LogError(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
+	fmt.Fprintf(os.Stderr, "[%s] ERROR: %s\n", time.Now().Format(time.RFC3339), msg)
 	if errorLogger != nil {
 		errorLogger.Println(msg)
-	} else {
-		fmt.Printf("[%s] ERROR: %s\n", time.Now().Format(time.RFC3339), msg)
 	}
 }
 
 // LogFatal logs an error to error.log and then calls os.Exit(1)
 func LogFatal(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
+	fmt.Fprintf(os.Stderr, "[%s] FATAL: %s\n", time.Now().Format(time.RFC3339), msg)
 	if errorLogger != nil {
 		errorLogger.Println(msg)
-	} else {
-		fmt.Printf("[%s] FATAL: %s\n", time.Now().Format(time.RFC3339), msg)
 	}
 	os.Exit(1)
 }
